@@ -1,0 +1,123 @@
+# https://aws.amazon.com/blogs/security/use-iam-roles-to-connect-github-actions-to-actions-in-aws/
+# https://wearecommunity.io/communities/devops-india/articles/4552#
+# https://skundunotes.com/2025/01/03/provision-aws-resources-with-github-and-hcp-terraform/
+# https://skundunotes.com/2023/03/07/ci-cd-with-terraform-and-github-actions-to-deploy-to-aws/
+# https://skundunotes.com/2023/02/28/securely-integrate-aws-credentials-with-github-actions-using-openid-connect/
+# https://faun.pub/terraform-cloud-f03fb4eaaa87
+# https://faun.pub/terraform-cloud-with-github-actions-dc897ed06e0d
+# https://developer.hashicorp.com/terraform/tutorials/automation/github-actions
+# https://github.com/charandasari/null-github-actions-terra/blob/main/.github/workflows/null-terraform.yaml
+# https://medium.com/@charandasar/automating-infrastructure-deployment-ci-cd-with-github-actions-terraform-cloud-and-terraform-3097ab76ac87
+# https://terrateam.io/blog/ci-cd-pipeline-for-terraform
+# https://www.firefly.ai/academy/integrating-oidc-with-github-action-to-manage-terraform-deployment-on-aws
+# https://youtu.be/B55rso_UR6I?si=e27SuLNIt8gONeRx
+# https://www.cloudthat.com/resources/blog/a-guide-to-integrate-vcs-into-the-terraform-cloud
+
+name: "GitHub Actions - Terraform Apply"
+run-name: ${{ github.actor }} has triggered the Apply pipeline
+on:
+  push:
+    branches: [main]
+  pull_request:
+    paths: ["**.tf", "**.tfvars"]
+    types: [opened, synchronize, reopened]
+
+permissions:
+  id-token: write # This is required for requesting the JWT token from GitHub IdP
+  contents: read # This is required for actions/checkout
+  pull-requests: write # This is required for gh bot to comment PR
+  actions: read
+  checks: write
+  issues: write # Ensure this is added
+
+jobs:
+  terraform_apply:
+    name: "Terraform_apply"
+    runs-on: ubuntu-latest
+    # env:
+    #   TF_CLOUD_ORGANIZATION: "cloud_infra_dev"
+    #   TF_API_TOKEN: "${{ secrets.TF_API_TOKEN }}"
+    #   TF_WORKSPACE: "github_actions_oidc_tfc"
+    #   CONFIG_DIRECTORY: "./"
+    #   TF_LOG: INFO
+
+    defaults:
+      run:
+        shell: bash
+    #   working-directory: .
+
+    steps:
+      - name: "Checkout code from Repository (same as git clone)"
+        uses: actions/checkout@v3
+
+      - name: "Configure AWS Credentials"
+        uses: aws-actions/configure-aws-credentials@v3
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          role-session-name: GitHubActions-Terraform
+          aws-region: ${{ secrets.AWS_REGION }}
+      - name: Whoami?
+        run: |
+          aws sts get-caller-identity
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        # with:
+        #   cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+        #   terraform_version: 1.14.3
+
+      - name: Terraform Init
+        id: init
+        run: |
+          echo -e "access_key = \"${AWS_ACCESS_KEY_ID}\"\nsecret_key = \"${AWS_SECRET_ACCESS_KEY}\"\ntoken = \"${AWS_SESSION_TOKEN}\"\nregion = \"${AWS_REGION}\"" | tee credentials.auto.tfvars
+          terraform init
+        env:
+          TF_LOG: ERROR
+
+      - name: Terraform Fmt
+        id: fmt
+        run: terraform fmt --recursive
+
+      - name: Terraform Validate
+        id: validate
+        run: terraform validate
+        env:
+          TF_LOG: ERROR
+
+      # Generates an execution plan for Terraform
+      - name: Terraform Plan
+        run: terraform plan -var-file="credentials.auto.tfvars" -input=false -out=tfplan
+        continue-on-error: true # "continue-on-error: true" ensures the workflow continues even if the plan fails, so you still get feedback about what went wrong
+        env:
+          TF_VAR_read_only: true
+          TF_LOG: ERROR
+
+      - name: Save Terraform Plan Output
+        if: github.event_name == 'pull_request'
+        run: terraform show -json tfplan > plan.json
+        env:
+          TF_LOG: ERROR
+
+      - name: Create PR Comment with Plan Output
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const fs = require('fs');
+            const planOutput = fs.readFileSync('plan.json', 'utf8');
+            const comment = `### Terraform Plan Result\n\`\`\`json\n${planOutput}\n\`\`\``;
+            const issue_number = context.payload.pull_request.number;
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            await github.rest.issues.createComment({
+              owner,
+              repo,
+              issue_number,
+              body: comment,
+            });
+
+      # On push to "main", build or change infrastructure according to Terraform configuration files
+      - name: Terraform Apply
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        run: terraform apply -var-file="credentials.auto.tfvars" -auto-approve -input=false
+        env:
+          TF_LOG: ERROR
