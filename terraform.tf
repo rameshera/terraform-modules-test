@@ -21,7 +21,7 @@ terraform {
 # Provider Block
 provider "aws" {
   region = var.aws_region
-  # allowed_account_ids = [ "779563210855" ]
+  allowed_account_ids = [ "779563210855" ]
 
   #   assume_role {
   #   role_arn     = "arn:aws:iam::779563210855:role/terraform-admin-role"
