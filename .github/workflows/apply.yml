@@ -123,12 +123,7 @@ jobs:
             });
 
 
-  approval-and-apply:
-    name: Approval → Terraform Apply
-    runs-on: ubuntu-latest
-    needs: terraform-plan
-    # 👇 This is the “gate” that will pause until approved
-    environment: dev
+
 
 
       # On push to "main", build or change infrastructure according to Terraform configuration files
