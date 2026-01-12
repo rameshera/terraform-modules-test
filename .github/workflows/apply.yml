@@ -129,7 +129,7 @@ jobs:
       #   env:
       #     TF_LOG: ERROR
 
-      - name: Step to run if "yes" is selected
+      - name: Terraform Apply
         if: ${{ inputs.enable_feature_x }}
         run: terraform apply -var-file="credentials.auto.tfvars" -auto-approve -input=true
         # This step only runs if the input value is 'true'
