@@ -44,7 +44,7 @@ jobs:
     env:
       TF_CLOUD_ORGANIZATION: "cloud-infra-dev123"
       TF_API_TOKEN: "${{ secrets.TF_API_TOKEN }}"
-      TF_WORKSPACE: "github_actions_oidc_tfc"
+      TF_WORKSPACE: "ga-terraform"
       CONFIG_DIRECTORY: "./"
       TF_LOG: INFO
       AWS_REGION: ${{ secrets.AWS_REGION }}
@@ -62,7 +62,7 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v3
         with:
           role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
-          role-session-name: GitHubActions-Terraform-TFC
+          role-session-name: GitHubActions-Terraform
           aws-region: ${{ secrets.AWS_REGION }}
       - name: Whoami?
         run: |
