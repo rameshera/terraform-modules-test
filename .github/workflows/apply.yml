@@ -30,6 +30,15 @@ permissions:
   checks: write
   issues: write # Ensure this is added
 
+workflow_dispatch:
+  inputs:
+    enable_feature_x:
+      description: 'Enable feature X (yes/no)'
+      required: true
+      type: boolean
+      default: false
+
+
 jobs:
   terraform_apply:
     name: "Terraform_apply"
@@ -121,3 +130,13 @@ jobs:
         run: terraform apply -var-file="credentials.auto.tfvars" -auto-approve -input=false
         env:
           TF_LOG: ERROR
+
+      - name: Step to run if "yes" is selected
+        if: ${{ inputs.enable_feature_x }}
+        run: echo "Feature X is enabled. Running specific steps..."
+        # This step only runs if the input value is 'true'
+      
+      - name: Step to run if "no" is selected
+        if: ${{ !inputs.enable_feature_x }}
+        run: echo "Feature X is disabled. Skipping specific steps..."
+        # This step only runs if the input value is 'false'
