@@ -47,6 +47,7 @@ jobs:
       TF_WORKSPACE: "github_actions_oidc_tfc"
       CONFIG_DIRECTORY: "./"
       TF_LOG: INFO
+      AWS_REGION: ${{ secrets.AWS_REGION }}
 
     defaults:
       run:
