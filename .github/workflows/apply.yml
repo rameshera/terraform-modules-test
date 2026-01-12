@@ -41,12 +41,12 @@ jobs:
   terraform_apply:
     name: "Terraform_apply"
     runs-on: ubuntu-latest
-    # env:
-    #   TF_CLOUD_ORGANIZATION: "cloud_infra_dev"
-    #   TF_API_TOKEN: "${{ secrets.TF_API_TOKEN }}"
-    #   TF_WORKSPACE: "github_actions_oidc_tfc"
-    #   CONFIG_DIRECTORY: "./"
-    #   TF_LOG: INFO
+    env:
+      TF_CLOUD_ORGANIZATION: "cloud-infra-dev123"
+      TF_API_TOKEN: "${{ secrets.TF_API_TOKEN }}"
+      TF_WORKSPACE: "github_actions_oidc_tfc"
+      CONFIG_DIRECTORY: "./"
+      TF_LOG: INFO
 
     defaults:
       run:
@@ -68,8 +68,8 @@ jobs:
           aws sts get-caller-identity
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
-        # with:
-        #   cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+        with:
+          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
         #   terraform_version: 1.14.3
 
       - name: Terraform Init
