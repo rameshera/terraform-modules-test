@@ -30,13 +30,13 @@ permissions:
   checks: write
   issues: write # Ensure this is added
 
-workflow_dispatch:
-  inputs:
-    enable_feature_x:
-      description: 'Enable feature X (yes/no)'
-      required: true
-      type: boolean
-      default: false
+  workflow_dispatch:
+    inputs:
+      enable_feature_x:
+        description: 'Enable feature X (yes/no)'
+        required: true
+        type: boolean
+        default: false
 
 
 jobs:
