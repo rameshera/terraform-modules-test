@@ -10,13 +10,13 @@ terraform {
     }
   }
 
-  cloud {
-    organization = "cloud-infra-dev123"
-    workspaces {
-      name    = "github-actions-oidc-hcp-terraform"
-      # project = "AWS Cloud IaC"
+    cloud {
+      organization = "cloud-infra-dev123"
+      workspaces {
+        name    = "github-actions-oidc-hcp-terraform"
+        # project = "AWS Cloud IaC"
+      }
     }
-  }
 }
     # backend "remote" {
     #   organization = "cloud-infra-dev123"
