@@ -10,6 +10,14 @@ terraform {
     }
   }
 
+  cloud {
+    organization = "cloud-infra-dev123"
+    workspaces {
+      name    = "github-actions-oidc-hcp-terraform"
+      project = "AWS Cloud IaC"
+    }
+  }
+}
     # backend "remote" {
     #   organization = "cloud-infra-dev123"
 
@@ -17,11 +25,11 @@ terraform {
     #       name = "github-actions-oidc-hcp-terraform"
     #     }
     # }
-    backend "s3" {
-      bucket = "gavprofileactions25"
-      key    = "vpc/terraform.tfstate"
-      region = "us-east-1"
-    }
+    # backend "s3" {
+    #   bucket = "gavprofileactions25"
+    #   key    = "vpc/terraform.tfstate"
+    #   region = "us-east-1"
+    # }
 
     
 
