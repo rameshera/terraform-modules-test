@@ -62,7 +62,7 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v3
         with:
           role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
-          role-session-name: GitHubActions-Terraform
+          role-session-name: GitHubActions-Terraform-TFC
           aws-region: ${{ secrets.AWS_REGION }}
       - name: Whoami?
         run: |
