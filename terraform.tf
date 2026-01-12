@@ -11,7 +11,7 @@ terraform {
   }
     backend "s3" {
       bucket = "gavprofileactions25"
-      key    = "vpc/terraform.tfstate"
+      key    = "vpc1/terraform.tfstate"
       region = "us-east-1"
     }
 
