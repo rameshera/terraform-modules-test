@@ -131,7 +131,7 @@ jobs:
 
       - name: Terraform Apply
         if: ${{ inputs.enable_feature_x }}
-        run: terraform apply -var-file="credentials.auto.tfvars" -auto-approve -input=true
+        run: terraform apply -var-file="credentials.auto.tfvars" -auto-approve -input=false
         # This step only runs if the input value is 'true'
       
       - name: Step to run if "no" is selected
