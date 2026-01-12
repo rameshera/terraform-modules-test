@@ -14,7 +14,7 @@ terraform {
       hostname = "app.terraform.io"
       organization = "cloud-infra-dev123"
       workspaces {
-        name    = "github-actions-oidc-hcp-terraform"
+        name    = "ga-terraform"
         #project = "AWS Cloud IaC"
       }
     }
