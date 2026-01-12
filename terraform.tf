@@ -33,7 +33,7 @@ terraform {
 
     
 
-  }
+  
 
 
 # Provider Block
