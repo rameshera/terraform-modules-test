@@ -21,13 +21,13 @@ on:
   pull_request:
     paths: ["**.tf", "**.tfvars"]
     types: [opened, synchronize, reopened]
-  workflow_dispatch:
-    inputs:
-      enable_feature_x:
-        description: 'Enable feature X (yes/no)'
-        required: true
-        type: boolean
-        default: false
+  # workflow_dispatch:
+  #   inputs:
+  #     enable_feature_x:
+  #       description: 'Enable feature X (yes/no)'
+  #       required: true
+  #       type: boolean
+  #       default: false
 
 permissions:
   id-token: write # This is required for requesting the JWT token from GitHub IdP
@@ -122,6 +122,15 @@ jobs:
               body: comment,
             });
 
+
+  approval-and-apply:
+    name: Approval → Terraform Apply
+    runs-on: ubuntu-latest
+    needs: terraform-plan
+    # 👇 This is the “gate” that will pause until approved
+    environment: dev
+
+
       # On push to "main", build or change infrastructure according to Terraform configuration files
       # - name: Terraform Apply
       #   if: github.ref == 'refs/heads/main' && github.event_name == 'push'
@@ -129,12 +138,12 @@ jobs:
       #   env:
       #     TF_LOG: ERROR
 
-      - name: Terraform Apply
-        if: ${{ inputs.enable_feature_x }}
-        run: terraform apply -var-file="credentials.auto.tfvars" -auto-approve -input=false
-        # This step only runs if the input value is 'true'
+      # - name: Terraform Apply
+      #   if: ${{ inputs.enable_feature_x }}
+      #   run: terraform apply -var-file="credentials.auto.tfvars" -auto-approve -input=false
+      #   # This step only runs if the input value is 'true'
       
-      - name: Step to run if "no" is selected
-        if: ${{ !inputs.enable_feature_x }}
-        run: echo "Feature X is disabled. Skipping specific steps..."
-        # This step only runs if the input value is 'false'
+      # - name: Step to run if "no" is selected
+      #   if: ${{ !inputs.enable_feature_x }}
+      #   run: echo "Feature X is disabled. Skipping specific steps..."
+      #   # This step only runs if the input value is 'false'
