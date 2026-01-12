@@ -30,15 +30,6 @@ permissions:
   checks: write
   issues: write # Ensure this is added
 
-  workflow_dispatch:
-    inputs:
-      enable_feature_x:
-        description: 'Enable feature X (yes/no)'
-        required: true
-        type: boolean
-        default: false
-
-
 jobs:
   terraform_apply:
     name: "Terraform_apply"
@@ -61,10 +52,10 @@ jobs:
 
       - name: "Configure AWS Credentials"
         uses: aws-actions/configure-aws-credentials@v3
-        with:
-          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
-          role-session-name: GitHubActions-Terraform
-          aws-region: ${{ secrets.AWS_REGION }}
+        # with:
+        #   role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+        #   role-session-name: GitHubActions-Terraform
+        #   aws-region: ${{ secrets.AWS_REGION }}
       - name: Whoami?
         run: |
           aws sts get-caller-identity
@@ -125,18 +116,18 @@ jobs:
             });
 
       # On push to "main", build or change infrastructure according to Terraform configuration files
-      - name: Terraform Apply
-        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-        run: terraform apply -var-file="credentials.auto.tfvars" -auto-approve -input=false
-        env:
-          TF_LOG: ERROR
+      # - name: Terraform Apply
+      #   if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+      #   run: terraform apply -var-file="credentials.auto.tfvars" -auto-approve -input=false
+      #   env:
+      #     TF_LOG: ERROR
 
-      - name: Step to run if "yes" is selected
-        if: ${{ inputs.enable_feature_x }}
-        run: echo "Feature X is enabled. Running specific steps..."
-        # This step only runs if the input value is 'true'
+      # - name: Step to run if "yes" is selected
+      #   if: ${{ inputs.enable_feature_x }}
+      #   run: echo "Feature X is enabled. Running specific steps..."
+      #   # This step only runs if the input value is 'true'
       
-      - name: Step to run if "no" is selected
-        if: ${{ !inputs.enable_feature_x }}
-        run: echo "Feature X is disabled. Skipping specific steps..."
-        # This step only runs if the input value is 'false'
+      # - name: Step to run if "no" is selected
+      #   if: ${{ !inputs.enable_feature_x }}
+      #   run: echo "Feature X is disabled. Skipping specific steps..."
+      #   # This step only runs if the input value is 'false'
