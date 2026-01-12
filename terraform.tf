@@ -15,7 +15,7 @@ terraform {
       organization = "cloud-infra-dev123"
       workspaces {
         name    = "ga-terraform"
-        #project = "AWS Cloud IaC"
+        project = "AWS Cloud IaC"
       }
     }
 }
