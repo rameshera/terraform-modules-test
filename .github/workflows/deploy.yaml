@@ -8,7 +8,15 @@ on:
  
 env:
   TF_CLI_ARGS: "-no-color"
- 
+
+permissions:
+  id-token: write # This is required for requesting the JWT token from GitHub IdP
+  contents: read # This is required for actions/checkout
+  pull-requests: write # This is required for gh bot to comment PR
+  actions: read
+  checks: write
+  issues: write # Ensure this is added
+
 jobs:
   terraform-plan:
     name: Terraform Init & Plan
@@ -17,9 +25,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
  
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v3
-      
+
       - name: Configure AWS Credentials (OIDC)
         uses: aws-actions/configure-aws-credentials@v3
         with:
@@ -27,6 +33,9 @@ jobs:
           role-session-name: GitHubActions-Terraform
           aws-region: ${{ secrets.AWS_REGION }}
  
+        - name: Setup Terraform
+          uses: hashicorp/setup-terraform@v3
+      
       - name: Terraform Init
         run: terraform init
  
