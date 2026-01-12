@@ -15,7 +15,7 @@ on:
  workflow_dispatch:
  
 env:
- tfcode_path: "./"
+ tfcode_path: "."
  tfc_organisation: "cloud-infra-dev123" # Replace it with your TFC Org
  tfc_hostname: "app.terraform.io"
  tfc_workspace: "ga-terraform" # Replace it with your TFC Workspace
