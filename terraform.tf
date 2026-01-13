@@ -10,32 +10,13 @@ terraform {
     }
   }
 
-    cloud {
-      hostname = "app.terraform.io"
-      organization = "cloud-infra-dev123"
-      workspaces {
-        name    = "ga-terraform"
-        project = "AWS Cloud IaC"
-      }
+    backend "s3" {
+      bucket = "gavprofileactions25"
+      key    = "vpc/terraform.tfstate"
+      region = "us-east-1"
     }
-}
-    # backend "remote" {
-    #   organization = "cloud-infra-dev123"
 
-    #     workspaces {
-    #       name = "github-actions-oidc-hcp-terraform"
-    #     }
-    # }
-    # backend "s3" {
-    #   bucket = "gavprofileactions25"
-    #   key    = "vpc/terraform.tfstate"
-    #   region = "us-east-1"
-    # }
 
-    
-
-  
-#
 
 # Provider Block
 provider "aws" {
@@ -48,3 +29,18 @@ provider "aws" {
     
   # }
 }
+   
+
+   
+    # backend "remote" {
+    #   organization = "cloud-infra-dev123"
+
+    #     workspaces {
+    #       name = "github-actions-oidc-hcp-terraform"
+    #     }
+    # }
+
+
+    
+
+  
