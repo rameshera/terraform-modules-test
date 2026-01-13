@@ -16,22 +16,26 @@ terraform {
       region = "us-east-1"
     }
 
-
-
 # Provider Block
+
 provider "aws" {
   region = var.aws_region
-  # allowed_account_ids = [ "779563210855" ]
-
-  # assume_role {
-  #   role_arn     = "arn:aws:iam::779563210855:role/terraform-admin-role"
-  #  # session_name = "terraform-session"
-    
-  # }
 }
+
+
+# provider "aws" {
+#   region = var.aws_region
+#     # allowed_account_ids = [ "779563210855" ]
+
+#     # assume_role {
+#     #   role_arn     = "arn:aws:iam::779563210855:role/terraform-admin-role"
+#     #  # session_name = "terraform-session"
+      
+#     # }
+#   }
    
 
-   
+
     # backend "remote" {
     #   organization = "cloud-infra-dev123"
 
