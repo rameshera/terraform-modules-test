@@ -124,15 +124,16 @@ jobs:
             });
 
 
-
-
-
       # On push to "main", build or change infrastructure according to Terraform configuration files
       # - name: Terraform Apply
       #   if: github.ref == 'refs/heads/main' && github.event_name == 'push'
       #   run: terraform apply -var-file="credentials.auto.tfvars" -auto-approve -input=false
       #   env:
       #     TF_LOG: ERROR
+
+
+
+
 
       # - name: Terraform Apply
       #   if: ${{ inputs.enable_feature_x }}
