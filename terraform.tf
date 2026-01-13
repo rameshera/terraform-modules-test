@@ -15,7 +15,7 @@ terraform {
       key    = "vpc/terraform.tfstate"
       region = "us-east-1"
     }
-
+}
 # Provider Block
 
 provider "aws" {
